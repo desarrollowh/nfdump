@@ -58,45 +58,20 @@
 static uint32_t recordCount;
 
 static void stringEXgenericFlow(FILE *stream, master_record_t *r) {
-    char datebuff1[64], datebuff2[64], dateBuff3[64];
+    char dateBuff3[64];
 
     time_t when = r->msecFirst / 1000LL;
     struct tm *ts = localtime(&when);
-    strftime(datebuff1, 63, "%Y-%m-%dT%H:%M:%S", ts);
-
-    when = r->msecLast / 1000LL;
-    ts = localtime(&when);
-    strftime(datebuff2, 63, "%Y-%m-%dT%H:%M:%S", ts);
-
     when = r->msecReceived / 1000LL;
     ts = localtime(&when);
     strftime(dateBuff3, 63, "%Y-%m-%dT%H:%M:%S", ts);
 
     fprintf(stream,
-            "	\"first\" : \"%s.%03u\",\n"
-            "	\"last\" : \"%s.%03u\",\n"
-            "	\"received\" : \"%s.%03u\",\n"
-            "	\"in_packets\" : %llu,\n"
-            "	\"in_bytes\" : %llu,\n",
-            datebuff1, (unsigned)(r->msecFirst % 1000LL), datebuff2, (unsigned)(r->msecLast % 1000LL), dateBuff3,
+            "   \"received\" : \"%s.%03u\",\n"
+            "   \"in_packets\" : %llu,\n"
+            "   \"in_bytes\" : %llu,\n",
+            dateBuff3,
             (unsigned)(r->msecReceived % 1000LL), (unsigned long long)r->inPackets, (unsigned long long)r->inBytes);
-
-    if (r->proto == IPPROTO_ICMP || r->proto == IPPROTO_ICMPV6) {  // ICMP
-        fprintf(stream,
-                "	\"proto\" : %u,\n"
-                "	\"icmp_type\" : %u,\n"
-                "	\"icmp_code\" : %u,\n"
-                "	\"src_tos\" : %u,\n",
-                r->proto, r->icmpType, r->icmpCode, r->tos);
-    } else {
-        fprintf(stream,
-                "	\"proto\" : %u,\n"
-                "	\"tcp_flags\" : \"%s\",\n"
-                "	\"src_port\" : %u,\n"
-                "	\"dst_port\" : %u,\n"
-                "	\"src_tos\" : %u,\n",
-                r->proto, FlagsString(r->tcp_flags), r->srcPort, r->dstPort, r->tos);
-    }
 
 }  // End of stringEXgenericFlow
 
@@ -625,12 +600,7 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
     }
     recordCount++;
 
-    fprintf(stream,
-            "{\n"
-            "	\"type\" : \"%s\",\n"
-            "	\"sampled\" : %u,\n"
-            "	\"export_sysid\" : %u,\n",
-            TestFlag(r->flags, V3_FLAG_EVENT) ? "EVENT" : "FLOW", TestFlag(r->flags, V3_FLAG_SAMPLED) ? 1 : 0, r->exporter_sysid);
+    fprintf(stream, "{\n");
 
     int i = 0;
     while (r->exElementList[i]) {
@@ -647,9 +617,9 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
             case EXipv6FlowID:
                 stringEXipv6Flow(stream, r);
                 break;
-            case EXflowMiscID:
-                stringEXflowMisc(stream, r);
-                break;
+            //case EXflowMiscID:
+            //    stringEXflowMisc(stream, r);
+            //    break;
             case EXcntFlowID:
                 stringEXcntFlow(stream, r);
                 break;
@@ -665,12 +635,12 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
             case EXbgpNextHopV6ID:
                 stringEXbgpNextHopV6(stream, r);
                 break;
-            case EXipNextHopV4ID:
-                stringEXipNextHopV4(stream, r);
-                break;
-            case EXipNextHopV6ID:
-                stringEXipNextHopV6(stream, r);
-                break;
+            //case EXipNextHopV4ID:
+            //    stringEXipNextHopV4(stream, r);
+            //    break;
+            //case EXipNextHopV6ID:
+            //    stringEXipNextHopV6(stream, r);
+            //    break;
             case EXipReceivedV4ID:
                 stringEXipReceivedV4(stream, r);
                 break;
@@ -740,9 +710,6 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
     }
 
     // add label and close json object
-    fprintf(stream,
-            "	\"label\" : \"%s\"\n"
-            "}",
-            r->label ? r->label : "<none>");
+    fprintf(stream, "}");
 
 }  // End of flow_record_to_json
