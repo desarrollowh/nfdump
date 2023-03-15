@@ -68,10 +68,9 @@ static void stringEXgenericFlow(FILE *stream, master_record_t *r) {
 
     fprintf(stream,
             "   \"received\" : \"%s.%03u\",\n"
-            "   \"in_packets\" : %llu,\n"
             "   \"in_bytes\" : %llu,\n",
             dateBuff3,
-            (unsigned)(r->msecReceived % 1000LL), (unsigned long long)r->inPackets, (unsigned long long)r->inBytes);
+            (unsigned)(r->msecReceived % 1000LL), (unsigned long long)r->inBytes);
 
 }  // End of stringEXgenericFlow
 
@@ -710,6 +709,9 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
     }
 
     // add label and close json object
-    fprintf(stream, "}");
+    fprintf(stream,
+            "   \"label\" : \"%s\"\n"
+            "}",
+            r->label ? r->label : "<none>");
 
 }  // End of flow_record_to_json
