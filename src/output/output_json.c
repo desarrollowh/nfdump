@@ -583,19 +583,19 @@ static void stringEXnelXlatePort(FILE *stream, master_record_t *r) {
 void json_prolog(void) {
     recordCount = 0;
     // open json
-    //printf("[\n");
+    printf("[");
 }  // End of json_prolog
 
 void json_epilog(void) {
     // close json
-    //printf("]\n");
+    printf("]\n");
 }  // End of json_epilog
 
 void flow_record_to_json(FILE *stream, void *record, int tag) {
     master_record_t *r = (master_record_t *)record;
 
     if (recordCount) {
-        fprintf(stream, "\n");
+        fprintf(stream, ",\n");
     }
     recordCount++;
 
