@@ -67,8 +67,8 @@ static void stringEXgenericFlow(FILE *stream, master_record_t *r) {
     strftime(dateBuff3, 63, "%Y-%m-%dT%H:%M:%S", ts);
 
     fprintf(stream,
-            "   \"received\" : \"%s.%03u\",\n"
-            "   \"in_bytes\" : %llu,\n",
+            "\"received\":\"%s.%03u\","
+            "\"in_bytes\":%llu,",
             dateBuff3,
             (unsigned)(r->msecReceived % 1000LL), (unsigned long long)r->inBytes);
 
@@ -87,10 +87,10 @@ static void stringEXipv4Flow(FILE *stream, master_record_t *r) {
     LookupLocation(r->V6.dstaddr, dloc, 128);
 
     fprintf(stream,
-            "	\"src4_addr\" : \"%s\",\n"
-            "	\"dst4_addr\" : \"%s\",\n"
-            "	\"src_geo\" : \"%s\",\n"
-            "	\"dst_geo\" : \"%s\",\n",
+            "\"src4_addr\":\"%s\","
+            "\"dst4_addr\":\"%s\","
+            "\"src_geo\":\"%s\","
+            "\"dst_geo\":\"%s\",",
             as, ds, sloc, dloc);
 
 }  // End of stringEXipv4Flow
@@ -111,10 +111,10 @@ static void stringEXipv6Flow(FILE *stream, master_record_t *r) {
     LookupLocation(r->V6.dstaddr, dloc, 128);
 
     fprintf(stream,
-            "	\"src6_addr\" : \"%s\",\n"
-            "	\"dst6_addr\" : \"%s\",\n"
-            "	\"src_geo\" : \"%s\",\n"
-            "	\"dst_geo\" : \"%s\",\n",
+            "\"src6_addr\":\"%s\","
+            "\"dst6_addr\":\"%s\","
+            "\"src_geo\":\"%s\","
+            "\"dst_geo\":\"%s\",",
             as, ds, sloc, dloc);
 
 }  // End of stringEXipv6Flow
@@ -270,7 +270,7 @@ static void stringEXipReceivedV4(FILE *stream, master_record_t *r) {
     inet_ntop(AF_INET, &i, ip, sizeof(ip));
     ip[IP_STRING_LEN - 1] = 0;
 
-    fprintf(stream, "	\"ip4_router\" : \"%s\",\n", ip);
+    fprintf(stream, "\"ip4_router\":\"%s\"", ip);
 
 }  // End of stringEXipReceivedV4
 
@@ -283,7 +283,7 @@ static void stringEXipReceivedV6(FILE *stream, master_record_t *r) {
     inet_ntop(AF_INET6, i, ip, sizeof(ip));
     ip[IP_STRING_LEN - 1] = 0;
 
-    fprintf(stream, "	\"ip6_router\" : \"%s\",\n", ip);
+    fprintf(stream, "	\"ip6_router\" : \"%s\"", ip);
 
 }  // End of stringEXipReceivedV6
 
@@ -583,23 +583,23 @@ static void stringEXnelXlatePort(FILE *stream, master_record_t *r) {
 void json_prolog(void) {
     recordCount = 0;
     // open json
-    printf("[\n");
+    //printf("[\n");
 }  // End of json_prolog
 
 void json_epilog(void) {
     // close json
-    printf("]\n");
+    //printf("]\n");
 }  // End of json_epilog
 
 void flow_record_to_json(FILE *stream, void *record, int tag) {
     master_record_t *r = (master_record_t *)record;
 
     if (recordCount) {
-        fprintf(stream, ",\n");
+        fprintf(stream, "\n");
     }
     recordCount++;
 
-    fprintf(stream, "{\n");
+    fprintf(stream, "{");
 
     int i = 0;
     while (r->exElementList[i]) {
@@ -608,32 +608,32 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
                 fprintf(stderr, "Found unexpected NULL extension \n");
                 break;
             case EXgenericFlowID:
-                stringEXgenericFlow(stream, r);
+                stringEXgenericFlow(stream, r); //
                 break;
             case EXipv4FlowID:
-                stringEXipv4Flow(stream, r);
+                stringEXipv4Flow(stream, r); //
                 break;
             case EXipv6FlowID:
-                stringEXipv6Flow(stream, r);
+                stringEXipv6Flow(stream, r); //
                 break;
             //case EXflowMiscID:
             //    stringEXflowMisc(stream, r);
             //    break;
-            case EXcntFlowID:
-                stringEXcntFlow(stream, r);
-                break;
-            case EXvLanID:
-                stringEXvLan(stream, r);
-                break;
-            case EXasRoutingID:
-                stringEXasRouting(stream, r);
-                break;
-            case EXbgpNextHopV4ID:
-                stringEXbgpNextHopV4(stream, r);
-                break;
-            case EXbgpNextHopV6ID:
-                stringEXbgpNextHopV6(stream, r);
-                break;
+            //case EXcntFlowID:
+            //    stringEXcntFlow(stream, r);
+            //    break;
+            //case EXvLanID:
+            //    stringEXvLan(stream, r);
+            //    break;
+            //case EXasRoutingID:
+            //    stringEXasRouting(stream, r);
+            //    break;
+            //case EXbgpNextHopV4ID:
+            //    stringEXbgpNextHopV4(stream, r);
+            //    break;
+            //case EXbgpNextHopV6ID:
+            //    stringEXbgpNextHopV6(stream, r);
+            //    break;
             //case EXipNextHopV4ID:
             //    stringEXipNextHopV4(stream, r);
             //    break;
@@ -641,66 +641,66 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
             //    stringEXipNextHopV6(stream, r);
             //    break;
             case EXipReceivedV4ID:
-                stringEXipReceivedV4(stream, r);
+                stringEXipReceivedV4(stream, r); //
                 break;
             case EXipReceivedV6ID:
-                stringEXipReceivedV6(stream, r);
+                stringEXipReceivedV6(stream, r); //
                 break;
-            case EXmplsLabelID:
-                stringEXmplsLabel(stream, r);
-                break;
-            case EXmacAddrID:
-                stringEXmacAddr(stream, r);
-                break;
-            case EXasAdjacentID:
-                stringEXasAdjacent(stream, r);
-                break;
-            case EXlatencyID:
-                stringEXlatency(stream, r);
-                break;
-            case EXinPayloadID:
-                String_ja3(stream, r);
-                break;
-            case EXoutPayloadID:
-                String_ja3(stream, r);
-                break;
-            case EXtunIPv4ID:
-                stringEXtunIPv4(stream, r);
-                break;
-            case EXtunIPv6ID:
-                stringEXtunIPv6(stream, r);
-                break;
-            case EXobservationID:
-                stringEXobservation(stream, r);
-                break;
-            case EXvrfID:
-                stringEXvrf(stream, r);
-                break;
+            //case EXmplsLabelID:
+            //    stringEXmplsLabel(stream, r);
+            //    break;
+            //case EXmacAddrID:
+            //    stringEXmacAddr(stream, r);
+            //    break;
+            //case EXasAdjacentID:
+            //    stringEXasAdjacent(stream, r);
+            //    break;
+            //case EXlatencyID:
+            //    stringEXlatency(stream, r);
+            //    break;
+            //case EXinPayloadID:
+            //    String_ja3(stream, r);
+            //    break;
+            //case EXoutPayloadID:
+            //    String_ja3(stream, r);
+            //    break;
+            //case EXtunIPv4ID:
+            //    stringEXtunIPv4(stream, r);
+            //    break;
+            //case EXtunIPv6ID:
+            //    stringEXtunIPv6(stream, r);
+            //    break;
+            //case EXobservationID:
+            //    stringEXobservation(stream, r);
+            //    break;
+            //case EXvrfID:
+            //    stringEXvrf(stream, r);
+            //    break;
 #ifdef NSEL
-            case EXnselCommonID:
-                stringEXnselCommon(stream, r);
-                break;
-            case EXnselXlateIPv4ID:
-                stringEXnselXlateIPv4(stream, r);
-                break;
-            case EXnselXlateIPv6ID:
-                stringEXnselXlateIPv6(stream, r);
-                break;
-            case EXnselXlatePortID:
-                stringEXnselXlatePort(stream, r);
-                break;
-            case EXnselAclID:
-                stringEXnselAcl(stream, r);
-                break;
-            case EXnselUserID:
-                stringEXnselUserID(stream, r);
-                break;
-            case EXnelCommonID:
-                stringEXnelCommon(stream, r);
-                break;
-            case EXnelXlatePortID:
-                stringEXnelXlatePort(stream, r);
-                break;
+            //case EXnselCommonID:
+            //    stringEXnselCommon(stream, r);
+            //    break;
+            //case EXnselXlateIPv4ID:
+            //    stringEXnselXlateIPv4(stream, r);
+            //    break;
+            //case EXnselXlateIPv6ID:
+            //    stringEXnselXlateIPv6(stream, r);
+            //    break;
+            //case EXnselXlatePortID:
+            //    stringEXnselXlatePort(stream, r);
+            //    break;
+            //case EXnselAclID:
+            //    stringEXnselAcl(stream, r);
+            //    break;
+            //case EXnselUserID:
+            //    stringEXnselUserID(stream, r);
+            //    break;
+            //case EXnelCommonID:
+            //    stringEXnelCommon(stream, r);
+            //    break;
+            //case EXnelXlatePortID:
+            //    stringEXnelXlatePort(stream, r);
+            //    break;
 #endif
             default:
                 dbg_printf("Extension %i not yet implemented\n", r->exElementList[i]);
@@ -709,9 +709,6 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
     }
 
     // add label and close json object
-    fprintf(stream,
-            "   \"label\" : \"%s\"\n"
-            "}",
-            r->label ? r->label : "<none>");
+    fprintf(stream, "}");
 
 }  // End of flow_record_to_json
