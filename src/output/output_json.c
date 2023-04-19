@@ -88,10 +88,19 @@ static void stringEXipv4Flow(FILE *stream, master_record_t *r) {
 
     fprintf(stream,
             "\"src4_addr\":\"%s\","
-            "\"dst4_addr\":\"%s\","
-            "\"src_geo\":\"%s\","
-            "\"dst_geo\":\"%s\",",
-            as, ds, sloc, dloc);
+            "\"dst4_addr\":\"%s\",",
+            as, ds);
+
+//    fprintf(stream,
+           // "\"src4_addr\":\"%s\","
+           // "\"dst4_addr\":\"%s\","
+            //"\"src_geo\":\"%s\","
+            //"\"dst_geo\":\"%s\",",
+           //  as, ds);
+            //sloc, dloc
+            //);
+
+
 
 }  // End of stringEXipv4Flow
 
@@ -625,9 +634,9 @@ void flow_record_to_json(FILE *stream, void *record, int tag) {
             //case EXvLanID:
             //    stringEXvLan(stream, r);
             //    break;
-            //case EXasRoutingID:
-            //    stringEXasRouting(stream, r);
-            //    break;
+            case EXasRoutingID:
+                stringEXasRouting(stream, r);
+                break;
             //case EXbgpNextHopV4ID:
             //    stringEXbgpNextHopV4(stream, r);
             //    break;
