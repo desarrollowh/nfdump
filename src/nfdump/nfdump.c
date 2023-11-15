@@ -196,10 +196,12 @@ static void PrintSummary(stat_record_t *stat_record, outputParams_t *outputParam
         bpp = stat_record->numpackets ? stat_record->numbytes / stat_record->numpackets : 0;  // Bytes per Packet
     }
     if (outputParams->mode == MODE_CSV) {
+        /*
         printf("Summary\n");
         printf("flows,bytes,packets,avg_bps,avg_pps,avg_bpp\n");
         printf("%llu,%llu,%llu,%llu,%llu,%llu\n", (long long unsigned)stat_record->numflows, (long long unsigned)stat_record->numbytes,
                (long long unsigned)stat_record->numpackets, (long long unsigned)bps, (long long unsigned)pps, (long long unsigned)bpp);
+        */
     } else {
         format_number(stat_record->numbytes, byte_str, outputParams->printPlain, VAR_LENGTH);
         format_number(stat_record->numpackets, packet_str, outputParams->printPlain, VAR_LENGTH);

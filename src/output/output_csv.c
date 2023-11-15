@@ -54,9 +54,12 @@ static uint32_t recordCount;
 
 void csv_prolog(void) {
     recordCount = 0;
+    /*
     printf(
         "ts,te,td,sa,da,sp,dp,pr,flg,fwd,stos,ipkt,ibyt,opkt,obyt,in,out,sas,das,smk,dmk,dtos,dir,nh,nhb,svln,dvln,ismc,odmc,idmc,osmc,mpls1,mpls2,"
         "mpls3,mpls4,mpls5,mpls6,mpls7,mpls8,mpls9,mpls10,cl,sl,al,ra,eng,exid,tr\n");
+    */
+    printf("sa,da,ibyt,sas,das,ra,tr\n");
 
 }  // End of csv_prolog
 
@@ -121,18 +124,24 @@ void csv_record(FILE *stream, void *record, int tag) {
 
     double duration = (double)(r->msecLast - r->msecFirst) / 1000.0;
 
+    /*
     fprintf(stream, "%s,%s,%.3f,%s,%s,%u,%u,%s,%s,%u,%u,%llu,%llu,%llu,%llu", datestr1, datestr2, duration, as, ds, r->srcPort, r->dstPort,
             ProtoString(r->proto, 0), FlagsString(r->tcp_flags), r->fwd_status, r->tos, (unsigned long long)r->inPackets,
             (unsigned long long)r->inBytes, (long long unsigned)r->out_pkts, (long long unsigned)r->out_bytes);
+    */
+    fprintf(stream, "%s,%s,%llu", as, ds, (unsigned long long)r->inBytes, (long long unsigned)r->out_pkts, (long long unsigned)r->out_bytes);
 
+    /*
     // EX_IO_SNMP_2:
     // EX_IO_SNMP_4:
     fprintf(stream, ",%u,%u", r->input, r->output);
+    */
 
     // EX_AS_2:
     // EX_AS_4:
     fprintf(stream, ",%u,%u", r->srcas, r->dstas);
 
+    /*
     // EX_MULIPLE:
     fprintf(stream, ",%u,%u,%u,%u", r->src_mask, r->dst_mask, r->dst_tos, r->dir);
     if (TestFlag(r->mflags, V3_FLAG_IPV6_NH) != 0) {  // IPv6
@@ -207,6 +216,7 @@ void csv_record(FILE *stream, void *record, int tag) {
     f3 = (double)r->appl_latency_usec / 1000.0;
 
     fprintf(stream, ",%9.3f,%9.3f,%9.3f", f1, f2, f3);
+    */
 
     // EX_ROUTER_IP_v4:
     if (TestFlag(r->mflags, V3_FLAG_IPV6_EXP) != 0) {
@@ -226,11 +236,13 @@ void csv_record(FILE *stream, void *record, int tag) {
         fprintf(stream, ",%s", as);
     }
 
+    /*
     // EX_ROUTER_ID
     fprintf(stream, ",%u/%u", r->engine_type, r->engine_id);
 
     // Exporter SysID
     fprintf(stream, ",%u", r->exporter_sysid);
+    */
 
     // Date flow received
     when = r->msecReceived / 1000LL;
