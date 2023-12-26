@@ -1087,9 +1087,11 @@ int main(int argc, char **argv) {
                             outputParams, compress);
     nfprof_end(&profile_data, processed);
 
+    /*
     if (passed == 0) {
         printf("No matching flows\n");
     }
+    */
 
     if (aggregate || print_order) {
         if (wfile) {
